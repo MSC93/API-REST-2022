@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+  </head>
+  <body>
+    <form action="" id="form">
+      <input type="email" value="prueba@mail.com" id="email" />
+      <input type="password" value="prueba" id="password" />
+
+      <button type="submit">acceder</button>
+    </form>
+
+    <script>
+      const form = document.getElementById("form");
+      const password = document.getElementById("password");
+      const email = document.getElementById("email");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        try {
+          // // Ejemplo implementando el metodo POST:
+          // async function postData(url = "", data = {}) {
+          //   // Opciones por defecto estan marcadas con un *
+          //   const response = await fetch(url, {
+          //     method: "POST", // *GET, POST, PUT, DELETE, etc.
+          //     mode: "cors", // no-cors, *cors, same-origin
+          //     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          //     credentials: "same-origin", // include, *same-origin, omit
+          //     headers: {
+          //       "Content-Type": "application/json",
+          //       // 'Content-Type': 'application/x-www-form-urlencoded',
+          //     },
+          //     redirect: "follow", // manual, *follow, error
+          //     referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          //     body: JSON.stringify(data), // body data type must match "Content-Type" header
+          //   });
+
+          //   return response.json(); // parses JSON response into native JavaScript objects
+          // }
+          // postData("/api/v1/auth/login", {
+          //   email: email.value,
+          //   password: password.value,
+          // }).then((data) => {
+          //   console.log(data); // JSON data parsed by `data.json()` call
+          // });
+
+          const res = await fetch("/api/v1/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: email.value,
+              password: password.value,
+            }),
+          });
+          console.log(res.ok, res.status);
+          // const data = await res.json();
+          // console.log(data);
+
+          //una manera de almacenar el token en  localstorage
+          const { token } = await res.json();
+          //reemplazo localstorage por cookie
+          //localStorage.setItem("token", token);
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    </script>
+  </body>
+</html>

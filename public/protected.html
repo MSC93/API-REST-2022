@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ruta protejida</title>
+  </head>
+  <body>
+    <h1>RUTA PROTEJIDA</h1>
+    <div>
+      <h2 id="app">Email:</h2>
+    </div>
+
+    <div>
+      <button id="logout">cerrar session</button>
+    </div>
+
+    <script>
+      const out = document.getElementById("logout");
+      out.addEventListener("click", async () => {
+        const res = await fetch("/api/v1/auth/logout", {
+          method: "GET",
+        });
+        console.log(res);
+      });
+
+      document.addEventListener("DOMContentLoaded", async (e) => {
+        try {
+          // const token =
+          //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2MmU4YjAyMjAxODk0MzBjMWMwZTQ4YmUiLCJpYXQiOjE2NTk1NTU3MTMsImV4cCI6MTY1OTU1NjYxM30.kONUvN5p07C7rSyL0sGyCBGS-ZtT8JR8Mmyfm4iYbmk";
+
+          const resToken = await fetch("/api/v1/auth/refresh", {
+            method: "GET",
+            credentials: "include",
+          });
+
+          const { token } = await resToken.json();
+
+          //para localstorage
+          // const token = localStorage.getItem("token");
+          const res = await fetch("/api/v1/auth/protected", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`, //localStorage
+              "Content-Type": "application/json",
+            },
+            //credentials: "include",
+          });
+
+          console.log(res.ok, res.status);
+          const data = await res.json();
+          // console.log(data);
+
+          if (res.ok) {
+            document.getElementById("app").textContent = data.email;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    </script>
+  </body>
+</html>
